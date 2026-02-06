@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Una pequeña misión 💖</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: url("img/fondo.jpg") center/cover no-repeat;
+    font-family: Georgia, serif;
+    overflow: hidden;
+}
+
+/* ATMÓSFERA */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(60,45,35,0.45);
+}
+
+/* HUD */
+#hud {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: #f6f1e7;
+    font-size: 18px;
+    z-index: 3;
+}
+
+/* MENSAJE */
+#mensaje {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #f6f1e7;
+    font-size: 22px;
+    text-align: center;
+    z-index: 3;
+}
+
+/* CORAZONES (HITBOX GRANDE) */
+.corazon {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+    cursor: pointer;
+    user-select: none;
+
+    animation: caer 6s linear forwards;
+}
+
+@keyframes caer {
+    from { top: -40px; }
+    to   { top: 110vh; }
+}
+
+/* CARTA FINAL */
+.scene {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #f6f1e7;
+    padding: 40px;
+    width: 420px;
+    border-radius: 12px;
+    text-align: center;
+    z-index: 4;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+
+/* BOTÓN */
+button {
+    margin-top: 20px;
+    padding: 10px 26px;
+    border: none;
+    border-radius: 20px;
+    background: #7b3f2c;
+    color: #f6f1e7;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MÚSICA -->
+<audio id="music" loop>
+    <source src="music/song.mp3" type="audio/mpeg">
+</audio>
+
+<div id="hud">❤️ Corazones: <span id="score">0</span> / 10</div>
+
+<div id="mensaje">
+    Atrapa 10 corazones 💕<br>
+    antes de que se escapen
+</div>
+
+<!-- CARTA FINAL -->
+<div class="scene" id="scene">
+    <h1>💌 Una última pregunta</h1>
+    <p>
+        Ya reuniste suficientes razones…<br><br>
+        ¿Quieres ser mi San Valentín?
+    </p>
+    <button onclick="final()">Sí 💖</button>
+</div>
+
+<script>
+let score = 0;
+let jugando = true;
+
+const scoreText = document.getElementById("score");
+const scene = document.getElementById("scene");
+const mensaje = document.getElementById("mensaje");
+const music = document.getElementById("music");
+
+music.play();
+
+/* CREAR CORAZONES */
+function crearCorazon() {
+    if (!jugando) return;
+
+    const corazon = document.createElement("div");
+    corazon.classList.add("corazon");
+    corazon.innerHTML = "❤️";
+
+    corazon.style.left = Math.random() * (window.innerWidth - 60) + "px";
+
+    corazon.onclick = () => {
+        score++;
+        scoreText.textContent = score;
+
+        corazon.style.transform = "scale(1.4)";
+        corazon.style.opacity = "0";
+
+        setTimeout(() => corazon.remove(), 150);
+
+        if (score >= 10) {
+            terminarJuego();
+        }
+    };
+
+    document.body.appendChild(corazon);
+
+    setTimeout(() => corazon.remove(), 6000);
+}
+
+/* LOOP */
+const loop = setInterval(crearCorazon, 900);
+
+/* FIN DEL JUEGO */
+function terminarJuego() {
+    jugando = false;
+    clearInterval(loop);
+
+    document.querySelectorAll(".corazon").forEach(c => c.remove());
+    mensaje.style.display = "none";
+    scene.style.display = "block";
+}
+
+/* FINAL */
+function final() {
+    document.body.innerHTML = `
+        <div style="
+            color:#f6f1e7;
+            text-align:center;
+            font-family:Georgia, serif;
+            animation: fadeIn 2s;
+        ">
+            <h1 style="font-size:42px;">💖 Feliz San Valentín 💖</h1>
+            <p style="font-size:20px;">
+                Cada corazón te trajo hasta aquí.<br>
+                Gracias por jugar conmigo 💌
+            </p>
+        </div>
+    `;
+}
+</script>
+
+</body>
+</html>

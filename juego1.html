@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Una pequeña misión 💖</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: url("img/fondo3.jpg") center/cover no-repeat;
+    font-family: Georgia, serif;
+    overflow: hidden;
+}
+
+/* ATMÓSFERA */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(60,45,35,0.45);
+}
+
+/* HUD */
+#hud {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: #f6f1e7;
+    font-size: 18px;
+    z-index: 3;
+}
+
+/* CARTAS */
+.scene {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    background: #f6f1e7;
+    padding: 40px;
+    width: 420px;
+    border-radius: 14px;
+    text-align: center;
+    z-index: 4;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    display: none;
+    animation: aparecer 1s ease forwards;
+}
+
+@keyframes aparecer {
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* CARTA FINAL ARRIBA */
+.finalTop {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f6f1e7;
+    padding: 25px 35px;
+    width: 440px;
+    border-radius: 14px;
+    text-align: center;
+    z-index: 5;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    animation: caerCarta 1.5s ease;
+}
+
+@keyframes caerCarta {
+    from { opacity:0; top:-100px; }
+}
+
+/* BOTONES */
+button {
+    margin: 15px 8px 0;
+    padding: 10px 26px;
+    border: none;
+    border-radius: 20px;
+    background: #7b3f2c;
+    color: #f6f1e7;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* CORAZONES */
+.corazon {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    cursor: pointer;
+    animation: caer 6s linear forwards;
+}
+
+@keyframes caer {
+    from { top: -40px; }
+    to { top: 110vh; }
+}
+
+/* PARTÍCULAS */
+.particula {
+    position: absolute;
+    font-size: 22px;
+    animation: explotar 1s ease-out forwards;
+}
+
+@keyframes explotar {
+    to {
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* PÉTALOS */
+.petalo {
+    position: absolute;
+    font-size: 26px;
+    animation: petalos 8s linear forwards;
+}
+
+@keyframes petalos {
+    from { top: -40px; opacity:1; }
+    to { top: 110vh; opacity:0; }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+    <source src="">
+</audio>
+<audio id="pop">
+    <source src="music/Cats and Gats.mp3">
+</audio>
+
+<div id="hud">❤️ Corazones: <span id="score">0</span> / 10</div>
+
+<!-- INTRO -->
+<div class="scene" id="intro">
+    <h2>💖 Una pequeña misión 💖</h2>
+    <p>
+        Amor de mi vidaaaaaaa<br><br>
+        Atrapa <b>10 corazones</b>.<br>
+        Cada uno guarda algo que quiero decirte 💌
+    </p>
+    <button onclick="empezar()">Comenzar</button>
+</div>
+
+<!-- PREGUNTA -->
+<div class="scene" id="finalScene">
+    <h1>   Una última pregunta 💌</h1>
+    <p> Ya sin bromas ni rodeos <br> ¿Quieres ser mi San Valentín?</p>
+    <button onclick="aceptar()">Sí 💖</button>
+    <button id="noBtn">No</button>
+</div>
+
+<div class="finalTop" id="finalTop" style="display:none;">
+    <h1>💖 Feliz San Valentín 💖</h1>
+    <p>
+        Gracias por leer y jugar jsjs.<br>
+        Prometo seguir atrapando tu corazón todos los días 💌
+        Amooooor, te amo muchismo, enserio que si, sé que lo he dicho ya muchas veces pero no me canso de repetirte que me encantas, que me fascinas y que enserio soy muy feliz a tu lado.
+        Me alegra poder decir que estoy en la relación que siempre soñé, que a pesar de todo nos seguimos eligiendo día con día, nos seguimos amando incluso más que antes, que esta distancia no hizo más 
+        que engrandecer nuestro amor, un amor que solo nosotros entendemos y que prometo cuidar como lo más preciado que tengo. Eres una mujer increíble Eli, enserio que aparte de amarte, te admiro muchisismo;
+        te agradezco todo lo que haz hecho por mi, por amarme y por hacerme sentir por primera vez seguro y tranquilo de ser yo... Espero te haya gustado este detalle ya que en él puse todo mi amor y cariño, te amoooo💖
+    </p>
+</div>
+
+<script>
+let score = 0;
+let jugando = false;
+let loop;
+
+const scoreText = document.getElementById("score");
+const intro = document.getElementById("intro");
+const finalScene = document.getElementById("finalScene");
+const music = document.getElementById("music");
+const pop = document.getElementById("pop");
+const noBtn = document.getElementById("noBtn");
+
+intro.style.display = "block";
+music.play();
+
+/* BOTÓN NO ESCAPA */
+noBtn.onmouseover = () => {
+    noBtn.style.position = "absolute";
+    noBtn.style.left = Math.random() * 300 + "px";
+    noBtn.style.top = Math.random() * 200 + "px";
+};
+
+/* EMPEZAR */
+function empezar() {
+    jugando = true;
+    intro.style.display = "none";
+    loop = setInterval(crearCorazon, 900);
+}
+
+/* CORAZONES */
+function crearCorazon() {
+    if (!jugando) return;
+
+    const c = document.createElement("div");
+    c.className = "corazon";
+    c.innerHTML = "❤️";
+    c.style.left = Math.random() * (window.innerWidth - 75) + "px";
+
+    c.onclick = e => {
+        score++;
+        scoreText.textContent = score;
+        pop.play();
+        explosion(e.clientX, e.clientY);
+        c.remove();
+        if (score >= 10) terminarJuego();
+    };
+
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 6000);
+}
+
+/* EXPLOSIÓN */
+function explosion(x,y){
+    for(let i=0;i<8;i++){
+        const p = document.createElement("div");
+        p.className="particula";
+        p.innerHTML="💖";
+        p.style.left=x+"px";
+        p.style.top=y+"px";
+        p.style.setProperty("--x",(Math.random()*200-100)+"px");
+        p.style.setProperty("--y",(Math.random()*200-100)+"px");
+        document.body.appendChild(p);
+        setTimeout(()=>p.remove(),1000);
+    }
+}
+
+/* FIN */
+function terminarJuego(){
+    jugando=false;
+    clearInterval(loop);
+    document.querySelectorAll(".corazon").forEach(c=>c.remove());
+    finalScene.style.display="block";
+}
+
+/* ACEPTAR */
+function aceptar(){
+    finalScene.style.display = "none";
+    document.getElementById("finalTop").style.display = "block";
+    setInterval(crearPetalo, 500);
+}
+
+
+/* PÉTALOS */
+function crearPetalo(){
+    const p=document.createElement("div");
+    p.className="petalo";
+    p.innerHTML="🌸";
+    p.style.left=Math.random()*window.innerWidth+"px";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),8000);
+}
+</script>
+
+</body>
+</html>
