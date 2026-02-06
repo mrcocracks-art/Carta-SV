@@ -11,6 +11,7 @@ body {
     background: url("img/fondo3.jpg") center/cover no-repeat;
     font-family: Georgia, serif;
     overflow: hidden;
+    touch-action: manipulation;
 }
 
 /* ATMÓSFERA */
@@ -96,6 +97,8 @@ button {
     font-size: 34px;
     cursor: pointer;
     animation: caer 6s linear forwards;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 @keyframes caer {
@@ -211,14 +214,23 @@ function crearCorazon() {
     c.innerHTML = "❤️";
     c.style.left = Math.random() * (window.innerWidth - 75) + "px";
 
-    c.onclick = e => {
-        score++;
-        scoreText.textContent = score;
-        pop.play();
-        explosion(e.clientX, e.clientY);
-        c.remove();
-        if (score >= 10) terminarJuego();
-    };
+    c.addEventListener("pointerdown", e => {
+  e.preventDefault();
+
+  score++;
+  scoreText.textContent = score;
+  pop.play();
+
+  const rect = c.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+
+  explosion(x, y);
+
+  c.remove();
+  if (score >= 10) terminarJuego();
+});
+
 
     document.body.appendChild(c);
     setTimeout(() => c.remove(), 6000);
